@@ -4,6 +4,7 @@ import { useSettingsStore } from "@/stores/settingsStore";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Database, Save, Bell } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { MasterDataCRUD } from "@/modules/settings/MasterDataCRUD";
 
@@ -16,6 +17,7 @@ export default function SettingsPage() {
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
+      toast.success("Settings Saved successfully");
       notify({ title: "Settings Saved", message: "Application configuration updated successfully.", type: "success" });
     }, 800);
   };

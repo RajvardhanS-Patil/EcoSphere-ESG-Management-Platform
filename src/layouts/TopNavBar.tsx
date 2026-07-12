@@ -15,7 +15,7 @@ const routeTitles: Record<string, string> = {
   "/settings": "Settings & Configuration",
 };
 
-export function TopNavBar({ setSidebarOpen, collapsed }: { setSidebarOpen?: (v: boolean) => void; collapsed?: boolean }) {
+export function TopNavBar({ setSidebarOpen, collapsed, setCollapsed }: { setSidebarOpen?: (v: boolean) => void; collapsed?: boolean; setCollapsed?: (v: boolean) => void }) {
   const pathname = usePathname();
   const [notifOpen, setNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -36,11 +36,20 @@ export function TopNavBar({ setSidebarOpen, collapsed }: { setSidebarOpen?: (v: 
   }, []);
 
   return (
-    <header className={`fixed top-0 right-0 z-40 bg-surface/80 backdrop-blur-md flex justify-between items-center px-lg py-md h-16 border-b border-outline-variant transition-all duration-300 ${collapsed ? 'lg:w-[calc(100%-72px)]' : 'lg:w-[calc(100%-16rem)]'} w-full`}>
+    <header className={`fixed top-0 right-0 z-40 bg-surface/80 backdrop-blur-md flex justify-between items-center px-lg py-md h-16 border-b border-outline-variant transition-all duration-300 left-0 ${collapsed ? 'lg:left-0' : 'lg:left-64'}`}>
       <div className="flex items-center gap-sm lg:gap-lg flex-1 min-w-0">
+        {/* Mobile Toggle */}
         <button 
           className="lg:hidden p-2 -ml-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors"
           onClick={() => setSidebarOpen && setSidebarOpen(true)}
+        >
+          <Menu className="w-6 h-6 text-primary" />
+        </button>
+        
+        {/* Desktop Toggle */}
+        <button 
+          className="hidden lg:block p-2 -ml-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors"
+          onClick={() => setCollapsed && setCollapsed(!collapsed)}
         >
           <Menu className="w-6 h-6 text-primary" />
         </button>

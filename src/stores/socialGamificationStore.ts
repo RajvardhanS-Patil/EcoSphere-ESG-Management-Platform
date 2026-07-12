@@ -34,6 +34,7 @@ interface SocialGamificationState {
   csrActivities: CSRActivity[];
   participations: EmployeeParticipation[];
   
+  addCSRActivity: (activity: Omit<CSRActivity, 'id' | 'status'>) => void;
   approveParticipation: (participationId: string) => void;
   redeemReward: (employeeId: string, rewardId: string) => void;
 }
@@ -65,6 +66,13 @@ export const useSocialGamificationStore = create<SocialGamificationState>((set) 
     { id: 'p6', employeeId: 'e5', activityId: 'csr4', proofUrl: 'https://evidence.example.com/p6.jpg', status: 'Approved', pointsEarned: 200, completionDate: '2024-11-01' },
     { id: 'p7', employeeId: 'e7', activityId: 'csr2', proofUrl: 'https://evidence.example.com/p7.jpg', status: 'Approved', pointsEarned: 250, completionDate: '2024-11-05' },
   ],
+
+  addCSRActivity: (activity) => {
+    set((state) => ({
+      csrActivities: [...state.csrActivities, { ...activity, id: 'csr' + Date.now().toString(36), status: 'Active' }]
+    }));
+    useNotificationStore.getState().addNotification({ title: 'New CSR Activity', message: `"${activity.title}" has been launched!`, type: 'success' });
+  },
 
   approveParticipation: (participationId) => {
     const settings = useSettingsStore.getState();

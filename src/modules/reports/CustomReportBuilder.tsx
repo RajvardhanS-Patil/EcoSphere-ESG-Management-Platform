@@ -7,6 +7,7 @@ export function CustomReportBuilder() {
   const departments = useMasterDataStore(state => state.departments);
   const categories = useMasterDataStore(state => state.categories);
   const addNotification = useNotificationStore(state => state.addNotification);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const [filters, setFilters] = useState({
     department: 'all',
@@ -17,11 +18,21 @@ export function CustomReportBuilder() {
   });
 
   const handleExport = (format: string) => {
+    setIsGenerating(true);
     addNotification({
       title: 'Export Started',
-      message: `Your custom report is being generated in ${format} format.`,
+      message: `Gathering data for your ${format} report...`,
       type: 'success'
     });
+
+    setTimeout(() => {
+      setIsGenerating(false);
+      addNotification({
+        title: 'Report Ready',
+        message: `Your ${format} report has been successfully generated and downloaded.`,
+        type: 'success'
+      });
+    }, 2500); // 2.5 second simulated delay
   };
 
   return (
@@ -117,8 +128,12 @@ export function CustomReportBuilder() {
           <span className="text-body-sm text-on-surface-variant">
             <strong>Preview:</strong> 12,450 records match your current filter criteria.
           </span>
-          <button onClick={() => handleExport('Excel')} className="bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95">
-            Generate Report
+          <button 
+            disabled={isGenerating}
+            onClick={() => handleExport('Excel')} 
+            className={`bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all ${isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90 active:scale-95'}`}
+          >
+            {isGenerating ? 'Generating...' : 'Generate Report'}
           </button>
         </div>
       </div>

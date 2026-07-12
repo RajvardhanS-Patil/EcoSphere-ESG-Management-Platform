@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Bot, Paperclip, ArrowUp, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   sender: string;
@@ -33,7 +35,7 @@ export function AICopilotChat({ data, esgContext }: AICopilotChatProps) {
     scrollToBottom();
   }, [messages]);
 
-  const callGemini = async (prompt: string): Promise<string | null> => {
+  const callGemini = async (prompt: string): Promise<{ text: string | null; error?: string }> => {
     try {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
@@ -41,10 +43,10 @@ export function AICopilotChat({ data, esgContext }: AICopilotChatProps) {
         body: JSON.stringify({ prompt, context: esgContext || {} }),
       });
       const data = await res.json();
-      if (data.fallback || data.error) return null;
-      return data.response;
+      if (data.fallback || data.error) return { text: null, error: data.error };
+      return { text: data.response };
     } catch {
-      return null;
+      return { text: null, error: "Network error occurred." };
     }
   };
 
@@ -58,19 +60,13 @@ export function AICopilotChat({ data, esgContext }: AICopilotChatProps) {
     // Try Gemini API first
     const geminiResponse = await callGemini(text);
 
-    if (geminiResponse) {
-      setMessages(prev => [...prev, { sender: "ai", text: geminiResponse }]);
+    if (geminiResponse.text) {
+      setMessages(prev => [...prev, { sender: "ai", text: geminiResponse.text }]);
     } else {
-      // Fallback to pre-written responses
-      const fallback = data.promptResponses?.[text];
-      if (fallback) {
-        setMessages(prev => [...prev, { sender: "ai", text: fallback }]);
-      } else {
-        setMessages(prev => [...prev, {
-          sender: "ai",
-          text: `Based on your current ESG data, I've analyzed the relevant metrics across Environmental, Social, and Governance dimensions for your query: "${text}". Your overall ESG posture remains strong with key improvements in carbon intensity this quarter. For detailed analysis, try one of the suggested prompts above.`
-        }]);
-      }
+      setMessages(prev => [...prev, {
+        sender: "ai",
+        text: `**Connection Error**: ${geminiResponse.error || "Unable to reach EcoSphere AI."}\n\nPlease ensure your API key is correctly configured and you have restarted the dev server. For now, here is a mock response:\n\nBased on your current ESG data, I've analyzed the relevant metrics across Environmental, Social, and Governance dimensions for your query: "${text}". Your overall ESG posture remains strong with key improvements in carbon intensity this quarter.`
+      }]);
     }
     setLoading(false);
   };
@@ -106,19 +102,25 @@ export function AICopilotChat({ data, esgContext }: AICopilotChatProps) {
           {messages.map((msg, i) => (
             <div 
               key={i} 
-              className={`p-lg rounded-[20px] max-w-3xl shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 ${
+              className={`p-lg rounded-[20px] shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 w-full max-w-3xl min-w-0 ${
                 msg.sender === 'ai' 
                   ? 'bg-surface border border-outline-variant/50 rounded-tl-sm self-start' 
-                  : 'bg-primary text-on-primary rounded-br-sm self-end max-w-xl'
+                  : 'bg-primary text-on-primary rounded-br-sm self-end'
               }`}
             >
-              {msg.sender === 'ai' && (
-                <div className="flex items-center gap-2 mb-2 text-primary">
-                  <Bot className="w-4 h-4" />
-                  <span className="text-xs font-semibold uppercase tracking-wider">ESG Advisor</span>
+              {msg.sender === 'ai' ? (
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-2 text-primary">
+                    <Bot className="w-4 h-4" />
+                    <span className="text-xs font-semibold uppercase tracking-wider">ESG Advisor</span>
+                  </div>
+                  <div className="prose prose-sm prose-primary max-w-none text-sm leading-relaxed text-on-surface break-words whitespace-pre-wrap">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                  </div>
                 </div>
+              ) : (
+                <p className="text-sm leading-relaxed whitespace-pre-wrap break-words text-on-primary">{msg.text}</p>
               )}
-              <p className="text-sm leading-relaxed whitespace-pre-line">{msg.text}</p>
             </div>
           ))}
           {loading && (

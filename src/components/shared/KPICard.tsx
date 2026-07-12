@@ -11,6 +11,7 @@ interface KPICardProps {
   trend: React.ReactNode;
   trendUp?: boolean;
   colorClass: "primary" | "secondary" | "tertiary" | "error";
+  onClick?: () => void;
 }
 
 function AnimatedNumber({ value }: { value: string }) {
@@ -53,7 +54,7 @@ function AnimatedNumber({ value }: { value: string }) {
   return <>{displayValue}{suffix}</>;
 }
 
-export function KPICard({ title, icon, value, unit, trend, trendUp, colorClass }: KPICardProps) {
+export function KPICard({ title, icon, value, unit, trend, trendUp, colorClass, onClick }: KPICardProps) {
   const borderColors = {
     primary: "border-l-primary",
     secondary: "border-l-secondary-stitch",
@@ -76,13 +77,16 @@ export function KPICard({ title, icon, value, unit, trend, trendUp, colorClass }
   };
 
   return (
-    <div className={cn(
-      "bg-surface-container-lowest p-lg rounded-2xl border-l-4 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 group",
+    <div 
+      onClick={onClick}
+      className={cn(
+      "bg-surface-container-lowest p-lg rounded-2xl border-l-4 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-0.5 group",
+      onClick && "cursor-pointer",
       borderColors[colorClass]
     )}>
-      <div className="flex justify-between items-start mb-md">
-        <span className="text-on-surface-variant font-label-md text-[11px] uppercase tracking-widest">{title}</span>
-        <div className={cn("p-2 rounded-xl group-hover:scale-110 transition-transform", bgIconColors[colorClass])}>
+      <div className="flex justify-between items-start mb-md min-w-0 gap-2">
+        <span className="text-on-surface-variant font-label-md text-[11px] uppercase tracking-widest truncate" title={title}>{title}</span>
+        <div className={cn("p-2 rounded-xl group-hover:scale-110 transition-transform shrink-0", bgIconColors[colorClass])}>
           {icon}
         </div>
       </div>

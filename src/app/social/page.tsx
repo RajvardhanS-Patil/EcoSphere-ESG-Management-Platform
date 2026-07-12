@@ -10,14 +10,21 @@ import { RewardsCatalog } from "@/modules/social/RewardsCatalog";
 import { DiversityMetrics } from "@/modules/social/DiversityMetrics";
 import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
 import { useMasterDataStore } from "@/stores/masterDataStore";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export default function SocialCSRPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newActivity, setNewActivity] = useState({ title: "", xpReward: "200" });
+  
   const employees = useSocialGamificationStore(state => state.employees);
   const csrActivities = useSocialGamificationStore(state => state.csrActivities);
   const participations = useSocialGamificationStore(state => state.participations);
   const redeemReward = useSocialGamificationStore(state => state.redeemReward);
   const rewards = useMasterDataStore(state => state.rewards);
+
+  const addCSRActivity = useSocialGamificationStore(state => state.addCSRActivity);
 
   const totalPoints = participations.reduce((acc, curr) => acc + curr.pointsEarned, 0);
   const totalBadges = employees.reduce((acc, curr) => acc + curr.unlockedBadges.length, 0);
@@ -63,8 +70,11 @@ export default function SocialCSRPage() {
     date: "Current",
     participants: 10,
     impact: `${a.xpReward} XP Reward`,
-    description: "CSR Activity generated from master data.",
-    progress: 50,
+    description: a.title.includes("Cleanup") ? "Organized community effort to remove waste and restore local ecosystems." : 
+                 a.title.includes("Digital") ? "Providing essential tech skills and devices to underserved rural populations." : 
+                 a.title.includes("Waste") ? "Corporate-wide challenge to minimize landfill footprint and increase recycling." :
+                 "Community outreach program empowering local neighborhoods and driving sustainable change.",
+    progress: Math.floor(Math.random() * 50) + 30,
     progressClass: "bg-primary",
     category: "Community",
     categoryClass: "bg-primary-container text-primary",
@@ -92,12 +102,50 @@ export default function SocialCSRPage() {
         <RewardsCatalog rewards={rewards} userXp={currentUser?.xp || 0} onRedeem={(rewardId) => redeemReward('e1', rewardId)} />
       </div>
 
-      <button className="fixed bottom-xl right-xl w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all z-50">
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-xl right-xl w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all z-50 group">
         <Plus className="w-6 h-6" />
         <span className="absolute right-16 bg-surface-container-highest text-on-surface-variant text-label-md px-md py-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none">
           Add Activity
         </span>
       </button>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-surface rounded-2xl w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden text-on-surface">
+            <div className="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+              <h3 className="font-headline-md font-bold text-primary flex items-center gap-2">
+                Create CSR Activity
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if(newActivity.title) {
+                addCSRActivity({ title: newActivity.title, xpReward: parseInt(newActivity.xpReward), categoryId: 'c1' });
+                setIsModalOpen(false);
+                setNewActivity({ title: "", xpReward: "200" });
+              }
+            }} className="p-lg space-y-md">
+              <div className="space-y-sm">
+                <label className="text-label-md font-medium text-on-surface-variant">Activity Title</label>
+                <input value={newActivity.title} onChange={e => setNewActivity({...newActivity, title: e.target.value})} type="text" placeholder="E.g. Beach Cleanup" required className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+              </div>
+              <div className="space-y-sm">
+                <label className="text-label-md font-medium text-on-surface-variant">XP Reward</label>
+                <input value={newActivity.xpReward} onChange={e => setNewActivity({...newActivity, xpReward: e.target.value})} type="number" required className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+              </div>
+              <div className="pt-sm flex justify-end gap-3">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-primary font-medium hover:bg-surface-container-high transition-colors">Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-primary text-on-primary rounded-xl font-bold shadow-md hover:opacity-90 active:scale-95 transition-all">Create Activity</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

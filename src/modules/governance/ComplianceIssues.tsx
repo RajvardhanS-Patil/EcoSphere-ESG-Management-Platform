@@ -39,19 +39,19 @@ export function ComplianceIssues({ issues }: { issues: Issue[] }) {
           <tbody className="divide-y divide-outline-variant">
             {issues.map((item, i) => (
               <tr key={i}>
-                <td className="px-lg py-md text-body-md font-medium text-on-surface">{item.issue}</td>
-                <td className="px-lg py-md">
+                <td className="px-lg py-md text-body-md font-medium text-on-surface min-w-[250px]">{item.issue}</td>
+                <td className="px-lg py-md whitespace-nowrap">
                   <span className={`px-3 py-1 rounded-full text-label-sm font-bold ${item.priorityColor} inline-flex items-center gap-1`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${item.dotColor}`}></span> {item.priority}
                   </span>
                 </td>
-                <td className="px-lg py-md">
+                <td className="px-lg py-md whitespace-nowrap">
                   <div className="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
                     <div className={`h-full ${item.riskColor}`} style={{ width: `${item.riskLevel}%` }}></div>
                   </div>
                 </td>
-                <td className="px-lg py-md text-body-sm text-on-surface-variant">{item.stakeholder}</td>
-                <td className="px-lg py-md">
+                <td className="px-lg py-md text-body-sm text-on-surface-variant whitespace-nowrap">{item.stakeholder}</td>
+                <td className="px-lg py-md whitespace-nowrap">
                   <span className={`px-3 py-1 rounded-full text-label-sm font-bold ${item.statusColor}`}>
                     {item.status}
                   </span>

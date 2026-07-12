@@ -133,17 +133,7 @@ export function SideNavBar({ isOpen = false, setIsOpen = () => {}, collapsed = f
             )}
           </Link>
 
-          {/* Collapse Toggle */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={cn(
-              "hidden lg:flex items-center rounded-xl transition-all duration-200 text-on-surface-variant hover:bg-surface-container-high mt-1",
-              collapsed ? "justify-center w-12 h-12 mx-auto" : "gap-md px-md py-2.5 w-full"
-            )}
-          >
-            {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
-            {!collapsed && <span className="text-sm">Collapse</span>}
-          </button>
+          {/* Desktop Collapse Toggle is now handled by TopNavBar hamburger menu */}
         </div>
       </aside>
     </>

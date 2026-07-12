@@ -1,7 +1,7 @@
 import React from "react";
 import { FileText, BarChart3, Filter, Share } from "lucide-react";
 
-export function ReportsHeader() {
+export function ReportsHeader({ activeTab, onTabChange }: { activeTab: string, onTabChange: (tab: string) => void }) {
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between mb-xl gap-md">
       <div>
@@ -10,10 +10,14 @@ export function ReportsHeader() {
       </div>
       <div className="flex items-center gap-sm">
         <div className="bg-surface-container-high rounded-lg p-1 flex">
-          <button className="px-md py-1.5 bg-surface text-primary shadow-sm rounded-md font-label-md flex items-center gap-xs">
+          <button 
+            onClick={() => onTabChange('Reports')}
+            className={`px-md py-1.5 rounded-md font-label-md flex items-center gap-xs transition-colors ${activeTab === 'Reports' ? 'bg-surface text-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-highest'}`}>
             <FileText className="w-4 h-4" /> Reports
           </button>
-          <button className="px-md py-1.5 text-on-surface-variant hover:bg-surface-container-highest rounded-md font-label-md flex items-center gap-xs transition-colors">
+          <button 
+            onClick={() => onTabChange('Analytics')}
+            className={`px-md py-1.5 rounded-md font-label-md flex items-center gap-xs transition-colors ${activeTab === 'Analytics' ? 'bg-surface text-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-highest'}`}>
             <BarChart3 className="w-4 h-4" /> Analytics
           </button>
         </div>

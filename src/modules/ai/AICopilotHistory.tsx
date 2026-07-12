@@ -31,7 +31,7 @@ export function AICopilotHistory({ history }: { history: HistoryItem[] }) {
         </div>
         <div>
           <p className="font-label-sm text-on-surface font-semibold uppercase">Copilot Online</p>
-          <p className="text-[11px] text-on-surface-variant">Llama-3 ESG Enhanced</p>
+          <p className="text-[11px] text-on-surface-variant">EcoSphere AI (Gemini Pro)</p>
         </div>
       </div>
     </aside>
