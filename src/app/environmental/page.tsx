@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import { CarbonCounterHero } from "@/modules/environmental/CarbonCounterHero";
 import { ActiveGoals } from "@/modules/environmental/ActiveGoals";
 import { CarbonTrends } from "@/modules/environmental/CarbonTrends";

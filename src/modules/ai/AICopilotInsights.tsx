@@ -21,7 +21,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export function AICopilotInsights({ data }: { data: InsightsData }) {
   return (
-    <aside className="w-80 border-l border-outline-variant bg-surface-container-lowest flex flex-col overflow-hidden">
+    <aside className="w-80 border-l border-outline-variant bg-surface-container-lowest flex flex-col overflow-hidden shrink-0 h-full">
       <div className="p-lg border-b border-outline-variant/30">
         <h3 className="font-headline-md text-[18px] text-primary font-bold">Insights & Actions</h3>
       </div>

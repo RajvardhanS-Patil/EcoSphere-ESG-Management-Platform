@@ -6,6 +6,7 @@ import { EnvironmentalPreview } from "@/modules/reports/EnvironmentalPreview";
 import { SocialDisclosure } from "@/modules/reports/SocialDisclosure";
 import { GovernanceAudit } from "@/modules/reports/GovernanceAudit";
 import { RawMetricsTable } from "@/modules/reports/RawMetricsTable";
+import { CustomReportBuilder } from "@/modules/reports/CustomReportBuilder";
 import { useScoreStore } from "@/stores/scoreStore";
 import { useEnvironmentalStore } from "@/stores/environmentalStore";
 import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
@@ -66,6 +67,8 @@ export default function ReportsAnalyticsPage() {
         <SocialDisclosure data={socialDisclosure} />
         <GovernanceAudit data={governanceAudit} />
       </div>
+
+      <CustomReportBuilder />
 
       <RawMetricsTable metrics={rawMetrics} />
 

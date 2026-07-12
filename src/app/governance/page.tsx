@@ -15,6 +15,8 @@ export default function GovernanceCompliancePage() {
   const addComplianceIssue = useGovernanceStore(state => state.addComplianceIssue);
   const policies = useMasterDataStore(state => state.policies);
   const audits = useGovernanceStore(state => state.audits);
+  const policyAcknowledgements = useGovernanceStore(state => state.policyAcknowledgements);
+  const acknowledgePolicy = useGovernanceStore(state => state.acknowledgePolicy);
   const participations = useSocialGamificationStore(state => state.participations);
 
   const mappedIssues = issues.map(i => ({
@@ -34,14 +36,21 @@ export default function GovernanceCompliancePage() {
     id: `#${p.id.substring(0, 4)}`
   }));
 
-  const mappedPolicies = policies.map(p => ({
-    title: p.title,
-    subtitle: `Version ${p.version}`,
-    icon: "description",
-    statusLabel: "Active",
-    statusColor: "text-secondary",
-    statusSub: "Action Required"
-  }));
+  const mappedPolicies = policies.map(p => {
+    // Check if the current employee has acknowledged this policy. Assume 'e1' is current employee for mock.
+    const ack = policyAcknowledgements.find(a => a.policyId === p.id && a.employeeId === 'e1');
+    const isAck = ack?.status === 'Acknowledged';
+
+    return {
+      id: p.id,
+      title: p.title,
+      subtitle: `Version ${p.version}`,
+      icon: "description",
+      statusLabel: isAck ? "Acknowledged" : "Pending Review",
+      statusColor: isAck ? "text-secondary" : "text-error",
+      statusSub: isAck ? "Action Complete" : "Action Required"
+    };
+  });
 
   const mappedAudits = audits.map(a => ({
     date: a.date,
@@ -76,7 +85,10 @@ export default function GovernanceCompliancePage() {
       <div className="grid grid-cols-12 gap-lg">
         <ComplianceIssues issues={mappedIssues} />
         <ApprovalQueue items={approvalQueue} />
-        <PolicyLibrary policies={mappedPolicies} />
+        <PolicyLibrary policies={mappedPolicies} onAcknowledge={(id) => {
+          const ack = policyAcknowledgements.find(a => a.policyId === id && a.employeeId === 'e1');
+          if (ack) acknowledgePolicy(ack.id);
+        }} />
         <AuditHistory history={mappedAudits} />
         <IssueResolutionPath steps={issueResolution} />
       </div>

@@ -1,11 +1,11 @@
 "use client";
 
 import { useSettingsStore } from "@/stores/settingsStore";
-import { useMasterDataStore } from "@/stores/masterDataStore";
 import { SectionHeader } from "@/components/shared/SectionHeader";
-import { Settings as SettingsIcon, Database, Save, CheckCircle } from "lucide-react";
+import { Database, Save, Bell } from "lucide-react";
 import { useState } from "react";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { MasterDataCRUD } from "@/modules/settings/MasterDataCRUD";
 
 export default function SettingsPage() {
   const settings = useSettingsStore();
@@ -73,6 +73,58 @@ export default function SettingsPage() {
           </button>
         </div>
       </div>
+
+      <div className="bg-surface rounded-2xl p-lg border border-outline-variant shadow-sm space-y-lg mt-xl">
+        <h3 className="text-title-lg text-on-surface flex items-center gap-sm">
+          <Bell className="w-5 h-5 text-primary" /> Notification Settings
+        </h3>
+        
+        <div className="space-y-md">
+          {/* Rule 1 */}
+          <div className="flex items-center justify-between p-md border border-outline-variant rounded-xl">
+            <div>
+              <p className="text-title-md text-on-surface">Compliance Issue Alerts</p>
+              <p className="text-body-md text-on-surface-variant">Notify when a new compliance issue is raised or becomes overdue.</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" checked={settings.notificationSettings.complianceIssues} onChange={(e) => settings.updateNotificationSetting('complianceIssues', e.target.checked)} />
+              <div className="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+          {/* Rule 2 */}
+          <div className="flex items-center justify-between p-md border border-outline-variant rounded-xl">
+            <div>
+              <p className="text-title-md text-on-surface">CSR & Challenge Approvals</p>
+              <p className="text-body-md text-on-surface-variant">Notify when participation is approved and XP is awarded.</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" checked={settings.notificationSettings.csrApproval} onChange={(e) => settings.updateNotificationSetting('csrApproval', e.target.checked)} />
+              <div className="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+          {/* Rule 3 */}
+          <div className="flex items-center justify-between p-md border border-outline-variant rounded-xl">
+            <div>
+              <p className="text-title-md text-on-surface">Badge Unlocks</p>
+              <p className="text-body-md text-on-surface-variant">Send a celebration notification when a badge is unlocked.</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" checked={settings.notificationSettings.badgeUnlocks} onChange={(e) => settings.updateNotificationSetting('badgeUnlocks', e.target.checked)} />
+              <div className="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+        </div>
+
+        <div className="pt-md flex justify-end">
+          <button onClick={handleSave} className="bg-primary text-on-primary px-lg py-sm rounded-full flex items-center gap-sm hover:opacity-90">
+            {saving ? <span className="animate-pulse">Saving...</span> : <><Save className="w-4 h-4" /> Save Configuration</>}
+          </button>
+        </div>
+      </div>
+
+      <MasterDataCRUD />
     </div>
   );
 }

@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Users & Auth
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  role          String         @default("EMPLOYEE")
+  employee      Employee?
+  notifications Notification[]
+}
+
+
+
+model Employee {
+  id           String     @id @default(cuid())
+  name         String
+  userId       String?    @unique
+  user         User?      @relation(fields: [userId], references: [id])
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  xp           Int        @default(0)
+
+  participations   Participation[]
+  redemptions      RewardRedemption[]
+  badges           EmployeeBadge[]
+  acknowledgements PolicyAcknowledgement[]
+}
+
+model Department {
+  id        String              @id @default(cuid())
+  name      String
+  code      String              @unique
+  head      String?
+  employees Employee[]
+  carbonTxs CarbonTransaction[]
+}
+
+// ESG Core Configuration
+model Category {
+  id         String        @id @default(cuid())
+  name       String
+  type       String // ENVIRONMENTAL, SOCIAL, GOVERNANCE
+  status     String
+  activities CsrActivity[]
+}
+
+// Environmental Module
+model EmissionFactor {
+  id          String @id @default(cuid())
+  name        String
+  source      String
+  unit        String
+  co2ePerUnit Float
+}
+
+model CarbonTransaction {
+  id             String     @id @default(cuid())
+  date           DateTime   @default(now())
+  source         String
+  amount         Float
+  unit           String
+  calculatedCO2e Float
+  entity         String
+  departmentId   String
+  department     Department @relation(fields: [departmentId], references: [id])
+  status         String
+}
+
+// Social & Gamification Module
+model CsrActivity {
+  id             String          @id @default(cuid())
+  title          String
+  categoryId     String
+  category       Category        @relation(fields: [categoryId], references: [id])
+  xpReward       Int
+  status         String
+  participations Participation[]
+}
+
+model Participation {
+  id             String      @id @default(cuid())
+  employeeId     String
+  employee       Employee    @relation(fields: [employeeId], references: [id])
+  activityId     String
+  activity       CsrActivity @relation(fields: [activityId], references: [id])
+  status         String // Pending, Approved, Rejected
+  pointsEarned   Int         @default(0)
+  proofUrl       String?
+  completionDate DateTime?
+}
+
+model Badge {
+  id                  String          @id @default(cuid())
+  name                String
+  icon                String
+  description         String
+  unlockRuleType      String // XP, CHALLENGE_COUNT
+  unlockRuleThreshold Int
+  employees           EmployeeBadge[]
+}
+
+model EmployeeBadge {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  badgeId    String
+  badge      Badge    @relation(fields: [badgeId], references: [id])
+  awardedAt  DateTime @default(now())
+
+  @@unique([employeeId, badgeId])
+}
+
+model Reward {
+  id             String             @id @default(cuid())
+  name           String
+  description    String
+  pointsRequired Int
+  stock          Int
+  status         String
+  redemptions    RewardRedemption[]
+}
+
+model RewardRedemption {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  rewardId   String
+  reward     Reward   @relation(fields: [rewardId], references: [id])
+  date       DateTime @default(now())
+}
+
+// Governance Module
+model Policy {
+  id               String                  @id @default(cuid())
+  title            String
+  version          String
+  status           String
+  requiresAck      Boolean                 @default(true)
+  acknowledgements PolicyAcknowledgement[]
+}
+
+model PolicyAcknowledgement {
+  id         String    @id @default(cuid())
+  employeeId String
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  policyId   String
+  policy     Policy    @relation(fields: [policyId], references: [id])
+  status     String // Pending, Acknowledged
+  date       DateTime?
+}
+
+model ComplianceIssue {
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  severity       String
+  status         String
+  identifiedDate DateTime @default(now())
+  dueDate        DateTime
+  assignee       String
+}
+
+// Notifications
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

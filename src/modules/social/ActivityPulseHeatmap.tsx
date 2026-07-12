@@ -13,7 +13,7 @@ export function ActivityPulseHeatmap() {
   
   const cells = Array.from({ length: 91 }, (_, i) => ({
     id: i,
-    intensity: intensityLevels[Math.floor(Math.random() * intensityLevels.length)]
+    intensity: intensityLevels[(i * 7 + 3) % intensityLevels.length]
   }));
 
   return (

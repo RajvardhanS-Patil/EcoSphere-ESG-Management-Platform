@@ -24,7 +24,7 @@ export function ChallengeDashboard({ challenges }: { challenges: Challenge[] }) 
         <div className="flex justify-between items-center mb-xl">
           <div>
             <h4 className="font-headline-md">Active ESG Challenges</h4>
-            <p className="text-on-primary-container font-body-sm">Boost your department's CSR impact score</p>
+            <p className="text-on-primary-container font-body-sm">Boost your department&apos;s CSR impact score</p>
           </div>
           <Zap className="w-8 h-8" />
         </div>

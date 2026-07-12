@@ -6,6 +6,8 @@ import { ChallengeDashboard } from "@/modules/social/ChallengeDashboard";
 import { SocialLeaderboard } from "@/modules/social/SocialLeaderboard";
 import { ActivityPulseHeatmap } from "@/modules/social/ActivityPulseHeatmap";
 import { CommunitySpotlight } from "@/modules/social/CommunitySpotlight";
+import { RewardsCatalog } from "@/modules/social/RewardsCatalog";
+import { DiversityMetrics } from "@/modules/social/DiversityMetrics";
 import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
 import { useMasterDataStore } from "@/stores/masterDataStore";
 import { Plus } from "lucide-react";
@@ -14,10 +16,12 @@ export default function SocialCSRPage() {
   const employees = useSocialGamificationStore(state => state.employees);
   const csrActivities = useSocialGamificationStore(state => state.csrActivities);
   const participations = useSocialGamificationStore(state => state.participations);
-  const badges = useMasterDataStore(state => state.badges);
+  const redeemReward = useSocialGamificationStore(state => state.redeemReward);
+  const rewards = useMasterDataStore(state => state.rewards);
 
   const totalPoints = participations.reduce((acc, curr) => acc + curr.pointsEarned, 0);
   const totalBadges = employees.reduce((acc, curr) => acc + curr.unlockedBadges.length, 0);
+  const currentUser = employees.find(e => e.id === 'e1'); // Mock current user
 
   const heroStats = [
     { label: "Total XP Earned", value: totalPoints.toString(), icon: "local_fire_department", colorClass: "text-tertiary", bgClass: "bg-tertiary-container/20", trend: "+12% this month", trendIcon: "trending_up", textClass: "text-tertiary" },
@@ -84,6 +88,8 @@ export default function SocialCSRPage() {
         </div>
 
         <CommunitySpotlight employees={spotlight} />
+        <DiversityMetrics />
+        <RewardsCatalog rewards={rewards} userXp={currentUser?.xp || 0} onRedeem={(rewardId) => redeemReward('e1', rewardId)} />
       </div>
 
       <button className="fixed bottom-xl right-xl w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all z-50">

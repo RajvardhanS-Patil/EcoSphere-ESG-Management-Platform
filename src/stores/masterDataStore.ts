@@ -59,6 +59,7 @@ interface MasterDataState {
   policies: ESGPolicy[];
   
   // Generic Actions
+  fetchDepartments: () => Promise<void>;
   addDepartment: (dept: Department) => void;
   addCategory: (cat: Category) => void;
   addEmissionFactor: (ef: EmissionFactor) => void;
@@ -69,12 +70,15 @@ interface MasterDataState {
 
 export const useMasterDataStore = create<MasterDataState>((set) => ({
   departments: [
-    { id: 'd1', name: 'Operations', code: 'OPS', head: 'Sarah Connor', parentDepartment: null, employeeCount: 120, status: 'Active' },
-    { id: 'd2', name: 'Logistics', code: 'LOG', head: 'Frank Castle', parentDepartment: 'OPS', employeeCount: 45, status: 'Active' },
+    { id: 'd1', name: 'Operations & Logistics', code: 'OPS', head: 'Sarah Connor', parentDepartment: null, employeeCount: 120, status: 'Active' },
+    { id: 'd2', name: 'Supply Chain', code: 'SCM', head: 'Frank Castle', parentDepartment: null, employeeCount: 45, status: 'Active' },
+    { id: 'd3', name: 'Research & Development', code: 'R&D', head: 'Tony Stark', parentDepartment: null, employeeCount: 65, status: 'Active' },
+    { id: 'd4', name: 'Sales & Marketing', code: 'S&M', head: 'Natasha Romanov', parentDepartment: null, employeeCount: 80, status: 'Active' },
   ],
   categories: [
     { id: 'c1', name: 'Community Service', type: 'CSR Activity', status: 'Active' },
     { id: 'c2', name: 'Energy Saving', type: 'Challenge', status: 'Active' },
+    { id: 'c3', name: 'Waste Reduction', type: 'CSR Activity', status: 'Active' },
   ],
   emissionFactors: [
     { id: 'ef1', name: 'Electricity - Grid', unit: 'kWh', co2ePerUnit: 0.45 },
@@ -82,19 +86,45 @@ export const useMasterDataStore = create<MasterDataState>((set) => ({
     { id: 'ef3', name: 'Flight - Short Haul', unit: 'km', co2ePerUnit: 0.15 },
   ],
   badges: [
-    { id: 'b1', name: 'Green Starter', description: 'Complete your first challenge', unlockRule: { type: 'CHALLENGE_COUNT', threshold: 1 }, icon: 'leaf' },
-    { id: 'b2', name: 'Eco Warrior', description: 'Earn 1000 XP', unlockRule: { type: 'XP', threshold: 1000 }, icon: 'shield' },
+    { id: 'b1', name: 'Green Starter', description: 'Complete your first CSR activity', unlockRule: { type: 'CHALLENGE_COUNT', threshold: 1 }, icon: 'leaf' },
+    { id: 'b2', name: 'Eco Warrior', description: 'Earn 1,000 XP through sustainability efforts', unlockRule: { type: 'XP', threshold: 1000 }, icon: 'shield' },
+    { id: 'b3', name: 'Carbon Champion', description: 'Earn 2,500 XP and become a sustainability leader', unlockRule: { type: 'XP', threshold: 2500 }, icon: 'trophy' },
   ],
   rewards: [
-    { id: 'r1', name: 'Extra PTO Day', description: 'Redeem points for 1 day of Paid Time Off', pointsRequired: 5000, stock: 10, status: 'Active' },
-    { id: 'r2', name: '$50 Vegan Cafe Voucher', description: 'Lunch on us!', pointsRequired: 1000, stock: 50, status: 'Active' },
+    { id: 'r1', name: 'Extra PTO Day', description: 'Redeem for 1 day of Paid Time Off', pointsRequired: 5000, stock: 10, status: 'Active' },
+    { id: 'r2', name: '$50 Vegan Cafe Voucher', description: 'Sustainable dining on us!', pointsRequired: 1000, stock: 50, status: 'Active' },
+    { id: 'r3', name: 'EcoSphere Merch Kit', description: 'Branded bamboo bottle, tote bag & notebook', pointsRequired: 750, stock: 25, status: 'Active' },
+    { id: 'r4', name: 'Carbon Offset Certificate', description: 'Offset 1 tonne of CO2 in your name', pointsRequired: 2000, stock: 100, status: 'Active' },
   ],
   policies: [
     { id: 'p1', title: 'Anti-Corruption Framework 2024', version: '4.2' },
     { id: 'p2', title: 'Sustainable Sourcing Protocol', version: '1.0' },
+    { id: 'p3', title: 'Net-Zero Commitment Charter', version: '2.3' },
   ],
   
-  addDepartment: (dept) => set((state) => ({ departments: [...state.departments, dept] })),
+  fetchDepartments: async () => {
+    try {
+      const res = await fetch('/api/master-data/departments');
+      const data = await res.json();
+      set({ departments: data });
+    } catch (err) {
+      console.error("Failed to fetch departments", err);
+    }
+  },
+  
+  addDepartment: async (dept) => {
+    try {
+      const res = await fetch('/api/master-data/departments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dept)
+      });
+      const newDept = await res.json();
+      set((state) => ({ departments: [...state.departments, newDept] }));
+    } catch (err) {
+      console.error("Failed to create department", err);
+    }
+  },
   addCategory: (cat) => set((state) => ({ categories: [...state.categories, cat] })),
   addEmissionFactor: (ef) => set((state) => ({ emissionFactors: [...state.emissionFactors, ef] })),
   addBadge: (badge) => set((state) => ({ badges: [...state.badges, badge] })),

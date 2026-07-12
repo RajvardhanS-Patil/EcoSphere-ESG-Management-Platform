@@ -9,7 +9,7 @@ interface HistoryItem {
 
 export function AICopilotHistory({ history }: { history: HistoryItem[] }) {
   return (
-    <aside className="w-72 border-r border-outline-variant bg-surface-container-lowest flex flex-col p-md shrink-0">
+    <aside className="w-72 border-r border-outline-variant bg-surface-container-lowest flex flex-col p-md shrink-0 h-full">
       <div className="flex items-center justify-between mb-lg px-sm">
         <h3 className="font-label-md text-on-surface font-semibold">History</h3>
         <button className="p-xs hover:bg-surface-container-high rounded-lg transition-colors">

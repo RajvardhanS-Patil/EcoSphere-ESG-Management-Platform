@@ -24,12 +24,20 @@ const navItems = [
   { name: "AI Copilot", href: "/ai", icon: Bot },
 ];
 
-export function SideNavBar() {
+export function SideNavBar({ isOpen = false, setIsOpen = (v: boolean) => {} }: { isOpen?: boolean, setIsOpen?: (v: boolean) => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col h-screen w-64 fixed left-0 top-0 z-50 border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest">
-      <div className="px-lg py-xl">
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      <aside className={`flex flex-col h-screen w-64 fixed left-0 top-0 z-50 border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="px-lg py-xl">
         <div className="flex items-center gap-md">
           <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-lg shadow-sm">
             <Leaf className="text-on-primary w-6 h-6" />
@@ -83,5 +91,6 @@ export function SideNavBar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

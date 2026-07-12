@@ -9,7 +9,7 @@ export function UpcomingAudits() {
         <div className="absolute inset-0 rounded-full border-2 border-primary/20 pulse-halo"></div>
       </div>
       <h4 className="font-headline-md text-on-surface">No Upcoming Audits</h4>
-      <p className="font-body-md text-on-surface-variant max-w-sm mx-auto">There are no external environmental audits scheduled for the current quarter. You're all caught up on regulatory reviews.</p>
+      <p className="font-body-md text-on-surface-variant max-w-sm mx-auto">There are no external environmental audits scheduled for the current quarter. You&apos;re all caught up on regulatory reviews.</p>
       <div className="pt-md">
         <button className="text-primary font-bold hover:underline font-label-md flex items-center gap-sm">
           <Plus className="w-4 h-4" /> Schedule Self-Assessment

@@ -1,5 +1,4 @@
 import React from "react";
-import { AnalyticsCard } from "@/components/shared/AnalyticsCard";
 
 interface Goal {
   label: string;

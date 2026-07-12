@@ -38,17 +38,29 @@ interface SocialGamificationState {
   redeemReward: (employeeId: string, rewardId: string) => void;
 }
 
-export const useSocialGamificationStore = create<SocialGamificationState>((set, get) => ({
+export const useSocialGamificationStore = create<SocialGamificationState>((set) => ({
   employees: [
-    { id: 'e1', name: 'Alice Smith', departmentId: 'd1', xp: 500, unlockedBadges: [] },
-    { id: 'e2', name: 'Bob Jones', departmentId: 'd2', xp: 1200, unlockedBadges: ['b1'] },
+    { id: 'e1', name: 'Sarah Jenkins', departmentId: 'd1', xp: 2450, unlockedBadges: ['b1', 'b2'] },
+    { id: 'e2', name: 'Marcus Chen', departmentId: 'd2', xp: 1800, unlockedBadges: ['b1', 'b2'] },
+    { id: 'e3', name: 'Priya Sharma', departmentId: 'd1', xp: 1200, unlockedBadges: ['b1'] },
+    { id: 'e4', name: 'David Okoro', departmentId: 'd3', xp: 950, unlockedBadges: [] },
+    { id: 'e5', name: 'Elena Rodriguez', departmentId: 'd4', xp: 680, unlockedBadges: [] },
+    { id: 'e6', name: 'James Wilson', departmentId: 'd2', xp: 320, unlockedBadges: [] },
   ],
   csrActivities: [
-    { id: 'csr1', title: 'Beach Cleanup', categoryId: 'c1', xpReward: 200, status: 'Active' },
-    { id: 'csr2', title: 'Zero Waste Week', categoryId: 'c2', xpReward: 500, status: 'Active' },
+    { id: 'csr1', title: 'Urban Forestation Drive', categoryId: 'c1', xpReward: 300, status: 'Active' },
+    { id: 'csr2', title: 'Digital Literacy Program', categoryId: 'c1', xpReward: 250, status: 'Active' },
+    { id: 'csr3', title: 'Zero Waste Week Challenge', categoryId: 'c2', xpReward: 500, status: 'Active' },
+    { id: 'csr4', title: 'Community Health Screening', categoryId: 'c1', xpReward: 200, status: 'Completed' },
+    { id: 'csr5', title: 'Ocean Cleanup Initiative', categoryId: 'c1', xpReward: 400, status: 'Active' },
   ],
   participations: [
-    { id: 'p1', employeeId: 'e1', activityId: 'csr1', status: 'Pending', pointsEarned: 0 },
+    { id: 'p1', employeeId: 'e1', activityId: 'csr1', proofUrl: 'https://evidence.example.com/p1.jpg', status: 'Approved', pointsEarned: 300, completionDate: '2024-10-15' },
+    { id: 'p2', employeeId: 'e2', activityId: 'csr2', proofUrl: 'https://evidence.example.com/p2.jpg', status: 'Approved', pointsEarned: 250, completionDate: '2024-10-20' },
+    { id: 'p3', employeeId: 'e3', activityId: 'csr3', status: 'Pending', pointsEarned: 0 },
+    { id: 'p4', employeeId: 'e4', activityId: 'csr1', proofUrl: 'https://evidence.example.com/p4.jpg', status: 'Approved', pointsEarned: 300, completionDate: '2024-10-22' },
+    { id: 'p5', employeeId: 'e1', activityId: 'csr5', status: 'Pending', pointsEarned: 0 },
+    { id: 'p6', employeeId: 'e5', activityId: 'csr4', proofUrl: 'https://evidence.example.com/p6.jpg', status: 'Approved', pointsEarned: 200, completionDate: '2024-11-01' },
   ],
 
   approveParticipation: (participationId) => {
@@ -77,13 +89,13 @@ export const useSocialGamificationStore = create<SocialGamificationState>((set, 
       );
 
       // Update Employee XP
-      let updatedEmployees = [...state.employees];
+      const updatedEmployees = [...state.employees];
       const empIndex = updatedEmployees.findIndex(e => e.id === participation.employeeId);
       
       if (empIndex >= 0) {
         const emp = updatedEmployees[empIndex];
         const newXp = emp.xp + points;
-        let newBadges = [...emp.unlockedBadges];
+        const newBadges = [...emp.unlockedBadges];
 
         // Badge Auto-Award Rule
         if (settings.badgeAutoAward) {
@@ -95,7 +107,6 @@ export const useSocialGamificationStore = create<SocialGamificationState>((set, 
                   notify({ title: 'Badge Unlocked!', message: `${emp.name} unlocked ${badge.name}`, type: 'success' });
                 }
               }
-              // Add logic for CHALLENGE_COUNT if needed
             }
           });
         }
