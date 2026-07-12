@@ -9,6 +9,7 @@ import { useGovernanceStore } from "@/stores/governanceStore";
 import { useMasterDataStore } from "@/stores/masterDataStore";
 import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
 import { ClipboardCheck } from "lucide-react";
+import { toast } from "sonner";
 
 export default function GovernanceCompliancePage() {
   const issues = useGovernanceStore(state => state.complianceIssues);
@@ -73,10 +74,13 @@ export default function GovernanceCompliancePage() {
     addComplianceIssue({
       auditId: audits[0]?.id || 'a1',
       severity: 'Medium',
-      description: 'Test Compliance Violation',
-      ownerId: 'd1', // Valid owner
-      dueDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0], // +2 days
+      description: 'Vendor compliance audit discrepancy detected',
+      ownerId: 'd2',
+      dueDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
       status: 'Open'
+    });
+    toast.warning('Compliance Issue Raised', {
+      description: 'New medium-severity issue added to the tracker.',
     });
   };
 

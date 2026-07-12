@@ -9,9 +9,9 @@ import {
   Scale,
   FileText,
   Bot,
-  PlusCircle,
   Settings,
-  HelpCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,10 +21,17 @@ const navItems = [
   { name: "Social", href: "/social", icon: Users },
   { name: "Governance", href: "/governance", icon: Scale },
   { name: "Reports", href: "/reports", icon: FileText },
-  { name: "AI Copilot", href: "/ai", icon: Bot },
+  { name: "ESG Advisor", href: "/ai", icon: Bot },
 ];
 
-export function SideNavBar({ isOpen = false, setIsOpen = (v: boolean) => {} }: { isOpen?: boolean, setIsOpen?: (v: boolean) => void }) {
+interface SideNavBarProps {
+  isOpen?: boolean;
+  setIsOpen?: (v: boolean) => void;
+  collapsed?: boolean;
+  setCollapsed?: (v: boolean) => void;
+}
+
+export function SideNavBar({ isOpen = false, setIsOpen = () => {}, collapsed = false, setCollapsed = () => {} }: SideNavBarProps) {
   const pathname = usePathname();
 
   return (
@@ -32,65 +39,113 @@ export function SideNavBar({ isOpen = false, setIsOpen = (v: boolean) => {} }: {
       {/* Mobile Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-200"
           onClick={() => setIsOpen(false)}
         />
       )}
-      <aside className={`flex flex-col h-screen w-64 fixed left-0 top-0 z-50 border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="px-lg py-xl">
-        <div className="flex items-center gap-md">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-lg shadow-sm">
-            <Leaf className="text-on-primary w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="font-headline-md text-headline-md font-bold text-primary">EcoSphere</h1>
-            <p className="text-xs uppercase tracking-widest text-on-surface-variant font-medium">Enterprise ESG</p>
+      <aside className={cn(
+        "flex flex-col h-screen fixed left-0 top-0 z-50 border-r border-outline-variant bg-surface-container-low transition-all duration-300 ease-in-out",
+        collapsed ? "w-[72px]" : "w-64",
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
+        {/* Logo Section */}
+        <div className={cn("py-xl flex items-center", collapsed ? "px-4 justify-center" : "px-lg")}>
+          <div className="flex items-center gap-md">
+            <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-xl shadow-md shadow-primary/20 shrink-0">
+              <Leaf className="text-on-primary w-5 h-5" />
+            </div>
+            {!collapsed && (
+              <div className="overflow-hidden">
+                <h1 className="font-headline-md text-headline-md font-bold text-primary whitespace-nowrap">EcoSphere</h1>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-medium whitespace-nowrap">Enterprise ESG Platform</p>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-      <nav className="flex-1 px-md space-y-base overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
+
+        {/* Navigation */}
+        <nav className={cn("flex-1 space-y-1 overflow-y-auto", collapsed ? "px-2" : "px-md")}>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                title={collapsed ? item.name : undefined}
+                className={cn(
+                  "flex items-center rounded-xl transition-all duration-200 group relative",
+                  collapsed ? "justify-center w-12 h-12 mx-auto" : "gap-md px-md py-2.5",
+                  isActive
+                    ? "bg-primary-container/30 text-primary font-semibold"
+                    : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
+                )}
+              >
+                {/* Active indicator bar */}
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                )}
+                <item.icon className={cn("w-5 h-5 shrink-0", isActive && "text-primary")} />
+                {!collapsed && <span className="whitespace-nowrap">{item.name}</span>}
+                {/* Collapsed tooltip */}
+                {collapsed && (
+                  <span className="absolute left-full ml-3 px-3 py-1.5 bg-surface-container-highest text-on-surface text-xs font-medium rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    {item.name}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom Section */}
+        <div className={cn("mt-auto border-t border-outline-variant", collapsed ? "p-2" : "p-md")}>
+          {!collapsed && (
             <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-md px-md py-sm rounded-lg transition-colors font-body-md text-body-md",
-                isActive
-                  ? "text-primary font-bold border-r-4 border-primary bg-surface-container-high"
-                  : "text-on-surface-variant hover:bg-surface-container-high"
-              )}
+              href="/reports"
+              className="block w-full py-2.5 bg-primary text-on-primary rounded-xl font-medium shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/25 active:scale-[0.98] transition-all text-center text-sm mb-3"
             >
-              <item.icon className="w-5 h-5" />
-              <span>{item.name}</span>
+              Generate ESG Report
             </Link>
-          );
-        })}
-      </nav>
-      <div className="p-md mt-auto">
-        <button className="w-full py-md bg-primary text-on-primary rounded-xl font-medium shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-          <PlusCircle className="w-5 h-5" />
-          Generate ESG Report
-        </button>
-        <div className="mt-xl space-y-base">
+          )}
+          
           <Link
             href="/settings"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-md text-body-md"
+            onClick={() => setIsOpen(false)}
+            title={collapsed ? "Settings" : undefined}
+            className={cn(
+              "flex items-center rounded-xl transition-all duration-200 group relative",
+              collapsed ? "justify-center w-12 h-12 mx-auto" : "gap-md px-md py-2.5",
+              pathname === "/settings"
+                ? "bg-primary-container/30 text-primary font-semibold"
+                : "text-on-surface-variant hover:bg-surface-container-high"
+            )}
           >
-            <Settings className="w-5 h-5" />
-            <span>Settings</span>
+            {pathname === "/settings" && (
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+            )}
+            <Settings className="w-5 h-5 shrink-0" />
+            {!collapsed && <span>Settings</span>}
+            {collapsed && (
+              <span className="absolute left-full ml-3 px-3 py-1.5 bg-surface-container-highest text-on-surface text-xs font-medium rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                Settings
+              </span>
+            )}
           </Link>
-          <Link
-            href="/support"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-md text-body-md"
+
+          {/* Collapse Toggle */}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className={cn(
+              "hidden lg:flex items-center rounded-xl transition-all duration-200 text-on-surface-variant hover:bg-surface-container-high mt-1",
+              collapsed ? "justify-center w-12 h-12 mx-auto" : "gap-md px-md py-2.5 w-full"
+            )}
           >
-            <HelpCircle className="w-5 h-5" />
-            <span>Support</span>
-          </Link>
+            {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+            {!collapsed && <span className="text-sm">Collapse</span>}
+          </button>
         </div>
-      </div>
-    </aside>
+      </aside>
     </>
   );
 }

@@ -10,6 +10,7 @@ import { UpcomingAudits } from "@/modules/environmental/UpcomingAudits";
 import { useEnvironmentalStore } from "@/stores/environmentalStore";
 import { useMasterDataStore } from "@/stores/masterDataStore";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 
 export default function EnvironmentalTrackingPage() {
   const carbonTransactions = useEnvironmentalStore(state => state.carbonTransactions);
@@ -46,13 +47,17 @@ export default function EnvironmentalTrackingPage() {
   });
 
   const handleAddTransaction = () => {
-    // Simulate adding a random carbon transaction
+    const dept = departments[Math.floor(Math.random() * departments.length)];
+    const qty = Math.floor(Math.random() * 500) + 100;
     addCarbonTransaction({
       date: new Date().toISOString().split('T')[0],
-      departmentId: departments[Math.floor(Math.random() * departments.length)].id,
+      departmentId: dept.id,
       emissionFactorId: emissionFactors[0].id,
-      quantity: Math.floor(Math.random() * 500) + 100,
+      quantity: qty,
       source: 'Manufacturing'
+    });
+    toast.success('Carbon Transaction Added', {
+      description: `${qty} ${emissionFactors[0].unit} recorded for ${dept.name}`,
     });
   };
 

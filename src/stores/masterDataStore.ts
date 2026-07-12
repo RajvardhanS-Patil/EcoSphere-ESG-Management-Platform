@@ -70,10 +70,12 @@ interface MasterDataState {
 
 export const useMasterDataStore = create<MasterDataState>((set) => ({
   departments: [
-    { id: 'd1', name: 'Operations & Logistics', code: 'OPS', head: 'Sarah Connor', parentDepartment: null, employeeCount: 120, status: 'Active' },
-    { id: 'd2', name: 'Supply Chain', code: 'SCM', head: 'Frank Castle', parentDepartment: null, employeeCount: 45, status: 'Active' },
-    { id: 'd3', name: 'Research & Development', code: 'R&D', head: 'Tony Stark', parentDepartment: null, employeeCount: 65, status: 'Active' },
-    { id: 'd4', name: 'Sales & Marketing', code: 'S&M', head: 'Natasha Romanov', parentDepartment: null, employeeCount: 80, status: 'Active' },
+    { id: 'd1', name: 'Manufacturing', code: 'MFG', head: 'Priya Sharma', parentDepartment: null, employeeCount: 150, status: 'Active' },
+    { id: 'd2', name: 'Procurement', code: 'PROC', head: 'Aarav Mehta', parentDepartment: null, employeeCount: 45, status: 'Active' },
+    { id: 'd3', name: 'Operations', code: 'OPS', head: 'Aditya Joshi', parentDepartment: null, employeeCount: 85, status: 'Active' },
+    { id: 'd4', name: 'Sustainability', code: 'SUST', head: 'Neha Deshmukh', parentDepartment: null, employeeCount: 30, status: 'Active' },
+    { id: 'd5', name: 'Human Resources', code: 'HR', head: 'Ananya Iyer', parentDepartment: null, employeeCount: 40, status: 'Active' },
+    { id: 'd6', name: 'Corporate Affairs', code: 'CORP', head: 'Raj Patil', parentDepartment: null, employeeCount: 25, status: 'Active' },
   ],
   categories: [
     { id: 'c1', name: 'Community Service', type: 'CSR Activity', status: 'Active' },

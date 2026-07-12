@@ -6,6 +6,9 @@ import { AICopilotInsights } from "@/modules/ai/AICopilotInsights";
 import { aiMockData } from "@/lib/mock/ai";
 import { useScoreStore } from "@/stores/scoreStore";
 import { useEnvironmentalStore } from "@/stores/environmentalStore";
+import { useGovernanceStore } from "@/stores/governanceStore";
+import { useMasterDataStore } from "@/stores/masterDataStore";
+import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
 
 import { useState } from "react";
 import { Menu, Info } from "lucide-react";
@@ -13,7 +16,21 @@ import { Menu, Info } from "lucide-react";
 export default function AIESGCopilotPage() {
   const { history, chat, insights } = aiMockData;
   const overallScore = useScoreStore(state => state.getOverallScore());
-  const emissions = useEnvironmentalStore(state => state.carbonTransactions).reduce((acc, tx) => acc + tx.calculatedCO2e, 0);
+  const carbonTransactions = useEnvironmentalStore(state => state.carbonTransactions);
+  const emissions = carbonTransactions.reduce((acc, tx) => acc + tx.calculatedCO2e, 0);
+  const departments = useMasterDataStore(state => state.departments);
+  const complianceIssues = useGovernanceStore(state => state.complianceIssues);
+  const employees = useSocialGamificationStore(state => state.employees);
+
+  const esgContext = {
+    overallScore,
+    totalEmissions: emissions,
+    transactionCount: carbonTransactions.length,
+    departments: departments.map(d => d.name),
+    openComplianceIssues: complianceIssues.filter(i => i.status !== 'Resolved').length,
+    totalEmployees: employees.length,
+    topPerformer: [...employees].sort((a, b) => b.xp - a.xp)[0]?.name || 'N/A',
+  };
 
   const [showHistory, setShowHistory] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
@@ -55,7 +72,7 @@ export default function AIESGCopilotPage() {
         </div>
         
         <div className="flex-1 min-w-0 flex flex-col z-10 bg-surface-container-lowest">
-          <AICopilotChat data={chat} />
+          <AICopilotChat data={chat} esgContext={esgContext} />
         </div>
 
         <div className={`absolute right-0 lg:relative z-20 h-full transition-transform duration-300 ${showInsights ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
