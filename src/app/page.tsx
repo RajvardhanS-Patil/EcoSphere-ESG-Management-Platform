@@ -1,3 +1,5 @@
+"use client";
+
 import { KPICard } from "@/components/shared/KPICard";
 import { 
   BarChart3, 
@@ -9,7 +11,6 @@ import {
   CheckCircle,
   ShieldCheck,
 } from "lucide-react";
-import { dashboardMockData } from "@/lib/mock/dashboard";
 import { CarbonEmissionOverview } from "@/modules/dashboard/CarbonEmissionOverview";
 import { DepartmentRankings } from "@/modules/dashboard/DepartmentRankings";
 import { ComplianceAlerts } from "@/modules/dashboard/ComplianceAlerts";
@@ -17,9 +18,70 @@ import { InternalLeaderboard } from "@/modules/dashboard/InternalLeaderboard";
 import { RecentActivities } from "@/modules/dashboard/RecentActivities";
 import { RecentNotifications } from "@/modules/dashboard/RecentNotifications";
 import { QuickActions } from "@/modules/dashboard/QuickActions";
+import { useScoreStore } from "@/stores/scoreStore";
+import { useEnvironmentalStore } from "@/stores/environmentalStore";
+import { useGovernanceStore } from "@/stores/governanceStore";
+import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
+import { useNotificationStore } from "@/stores/notificationStore";
 
 export default function ExecutiveDashboard() {
-  const { kpis, departmentPerformance, complianceAlerts, leaderboard, recentActivities, notifications } = dashboardMockData;
+  const getOverallScore = useScoreStore(state => state.getOverallScore);
+  const getDepartmentScores = useScoreStore(state => state.getDepartmentScores);
+  const carbonTransactions = useEnvironmentalStore(state => state.carbonTransactions);
+  const complianceIssues = useGovernanceStore(state => state.complianceIssues);
+  const employees = useSocialGamificationStore(state => state.employees);
+  const notifications = useNotificationStore(state => state.notifications);
+  
+  const overallScore = getOverallScore();
+  const totalEmissions = carbonTransactions.reduce((acc, curr) => acc + curr.calculatedCO2e, 0);
+
+  // Simplified KPI mock calculations
+  const kpis = {
+    esgScore: { value: overallScore, unit: "/100", trend: "Live Calculation", trendUp: true },
+    carbonFootprint: { value: totalEmissions, unit: "kg CO2e", trend: "Live Calculation", trendUp: true },
+    socialImpact: { value: 92, unit: "index", trend: "Live Calculation", trendUp: true },
+    governance: { value: 100, unit: "%", trend: "Live Calculation", trendUp: true },
+  };
+
+  const departmentPerformance = getDepartmentScores().map(ds => ({
+    name: ds.departmentId, // Mock mapping, real app would lookup name
+    score: ds.totalScore,
+    color: ds.totalScore > 80 ? "bg-primary" : "bg-error"
+  }));
+
+  const complianceAlerts = complianceIssues
+    .filter(i => i.status !== 'Resolved')
+    .map(i => ({
+      type: "ALERT",
+      description: i.description,
+      colorClass: i.severity === 'High' ? "text-error" : "text-secondary-fixed"
+    }));
+
+  const leaderboard = [...employees]
+    .sort((a, b) => b.xp - a.xp)
+    .slice(0, 3)
+    .map((e, idx) => ({
+      id: idx,
+      name: e.name,
+      role: "Employee",
+      points: e.xp,
+      avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuDRwjBk5Bbr4DBCsJ7y8PAVNaSTH21jfFi3hnE1eEnJh3fQg9oZALPW469mGigw9ZCMRqH3MczxmRyT6pMZt_N14dTSovbTftlVmSPdRZfscuV6JmvSJXyXEeVTgrIj2x7EU1hDAFwGoTmOMH4dEhI1fgvg9Q2LhHmpeyonfEiYCSiDWmH1OpC4_7qvoyIA8T9wRdeJ0aHI6LHXOMrbq8tWKgeCG9wtqPd-_3tBVbJgIQbxaVmGWT4m026Ir3_w7YZB6uxlLYpGSzff"
+    }));
+
+  const recentActivities = carbonTransactions.slice(-3).map(tx => ({
+    title: "Carbon Transaction",
+    description: `Added ${tx.quantity} units from ${tx.source}`,
+    time: tx.date,
+    colorClass: "bg-primary"
+  }));
+
+  const mappedNotifications = notifications.slice(0, 3).map(n => ({
+    title: n.title,
+    description: n.message,
+    time: "Just now",
+    type: "alert",
+    colorClass: n.type === 'error' ? "text-error bg-error/20" : "text-primary bg-primary-container/20"
+  }));
 
   return (
     <div className="space-y-gutter pb-12">
@@ -98,7 +160,7 @@ export default function ExecutiveDashboard() {
 
       {/* Bottom Section: Quick Actions & Notifications */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-        <RecentNotifications notifications={notifications} />
+        <RecentNotifications notifications={mappedNotifications} />
         <QuickActions />
       </div>
     </div>
