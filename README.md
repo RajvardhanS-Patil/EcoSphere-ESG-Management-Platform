@@ -7,13 +7,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Prisma ORM](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
-[![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_2.0-8E75B2?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_2.0_Flash-8E75B2?style=for-the-badge&logo=google)](https://ai.google.dev/)
 [![Zustand](https://img.shields.io/badge/State-Zustand_5-443e38?style=for-the-badge)](https://github.com/pmndrs/zustand)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 **An intelligent, enterprise-grade sustainability ERP unifying Environmental accounting, Social gamification, and Governance compliance with AI-powered analytics.**
 
-[Key Features](#-key-features) • [Architecture](#-architecture--system-design) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start--installation) • [Database Schema](#-database-schema) • [API Reference](#-api-reference) • [Roadmap](#-future-roadmap)
+[Key Features](#-key-features) • [Architecture](#-architecture--system-design) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start--installation) • [Database Schema](#-database-schema) • [API Reference](#-api-reference) • [Live Demo Script](#-live-demo-walkthrough) • [Roadmap](#-future-roadmap)
 
 </div>
 
@@ -21,19 +21,20 @@
 
 ## 📌 Executive Overview
 
-Enterprises globally face growing regulatory demands—from **SEBI BRSR (Business Responsibility and Sustainability Reporting)** in India to **EU CSRD** and **GRI Standards**. Yet, most organizations manage sustainability in fragmented spreadsheets, disconnected emails, and manual audits.
+Enterprises globally face growing regulatory demands—from **SEBI BRSR (Business Responsibility and Sustainability Reporting)** in India to **EU CSRD** and **GRI Standards**. Yet, most organizations manage sustainability across fragmented spreadsheets, disconnected emails, and manual periodic audits.
 
 **EcoSphere** solves this $500B compliance challenge by delivering **"An ERP for Sustainability"**:
-- 📉 **Eliminates Data Silos:** Consolidates Scope 1, 2, and 3 emissions, CSR initiatives, and governance audit trails into a single source of truth.
-- ⚡ **Cascading Real-Time State:** Automatically updates global ESG scores and department rankings the moment a new carbon transaction or CSR proof is submitted.
-- 🎮 **Gamification Engine:** Increases employee CSR engagement from an industry standard of 20% to over 80% with XP, automatic badge milestones, and a company reward redemption store.
-- 🤖 **Context-Aware AI Copilot:** Powered by Google Gemini, turning raw transactional metrics into C-suite executive briefs, risk analyses, and regulatory disclosures in seconds.
+
+- 📉 **Eliminates Data Silos:** Consolidates Scope 1, 2, and 3 carbon emissions, CSR initiatives, and governance audit trails into a single unified source of truth.
+- ⚡ **Cascading Real-Time State:** Automatically updates global composite ESG scores and department rankings the moment a new carbon transaction or CSR proof is submitted.
+- 🎮 **Gamification Engine:** Boosts employee CSR engagement from an industry baseline of 20% to over 80% with XP, automatic badge milestones, and a company reward redemption store.
+- 🤖 **Context-Aware AI Copilot:** Powered by Google Gemini 2.0 Flash, transforming live transactional metrics into C-suite executive briefs, risk analyses, and regulatory disclosures in seconds.
 
 ---
 
 ## 🏗️ Architecture & System Design
 
-EcoSphere is architected around a strict unidirectional data flow and clean separation of concerns, ensuring high performance, zero build warnings, and seamless extensibility.
+EcoSphere is architected around a strict unidirectional data flow and clean separation of concerns, ensuring high performance, 100% type safety, and seamless extensibility.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -66,12 +67,13 @@ EcoSphere is architected around a strict unidirectional data flow and clean sepa
 
 ```mermaid
 flowchart LR
-    A[New Carbon Transaction] --> B[Environmental Store]
-    B --> C[Emission Factor Calculator]
-    C --> D[Department Total Recalculation]
-    D --> E[Global ESG Score Engine]
-    E --> F[Executive Dashboard Update]
-    E --> G[Audit & Alert Notification]
+    A[New Carbon Transaction / CSR Proof] --> B[Domain Zustand Store]
+    B --> C[Emission & Point Recalculation]
+    C --> D[Department Total Updates]
+    D --> E[Global ESG Score Engine (40-30-30)]
+    E --> F[Executive Dashboard & Leaderboard]
+    E --> G[Audit Alerts & In-App Notifications]
+    E --> H[AI Copilot Context Ingestion]
 ```
 
 ---
@@ -109,7 +111,7 @@ flowchart LR
   - 📋 *Executive ESG Summary* — Board-ready sustainability overview.
   - 📉 *Carbon Trend Analysis* — Emission anomalies and Scope 1-3 breakdowns.
   - ⚠️ *Department Risk Assessment* — Non-compliance indicators and mitigation recommendations.
-  - 💡 *Sustainability Action Plan* — AI recommendations aligned with Indian regulatory frameworks (SEBI, CPCB, MoEFCC, Companies Act 2013).
+  - 💡 *Sustainability Action Plan* — AI recommendations aligned with Indian regulatory frameworks (SEBI, CPCB, MoEFCC, Companies Act 2013 Section 135).
 - **Graceful Fallback:** Built-in offline intelligent synthesis when running without active API keys.
 
 ### 6. 📈 Custom Report Builder & Analytics Studio
@@ -127,12 +129,12 @@ flowchart LR
 
 | Domain | Technology | Description |
 |---|---|---|
-| **Frontend Framework** | [Next.js 16 (App Router)](https://nextjs.org/) | Server and Client Components, optimized routing |
-| **UI Library** | [React 19](https://react.dev/) | Concurrent rendering and modern hook architecture |
+| **Frontend Framework** | [Next.js 16.2 (App Router)](https://nextjs.org/) | Server and Client Components, Turbopack, optimized routing |
+| **UI Library** | [React 19.2](https://react.dev/) | Concurrent rendering and modern hook architecture |
 | **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Strict type safety across UI, stores, and API layers |
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Modern CSS engine with `@tailwindcss/postcss` |
 | **State Management** | [Zustand 5](https://github.com/pmndrs/zustand) | Decoupled, reactive stores for cross-module synchronization |
-| **ORM & Database** | [Prisma 5](https://www.prisma.io/) + SQLite / PostgreSQL | Type-safe database queries and automated migrations |
+| **ORM & Database** | [Prisma 5.22](https://www.prisma.io/) + SQLite / PostgreSQL | Type-safe database queries and automated migrations |
 | **AI Integration** | [Google Generative AI](https://ai.google.dev/) (`@google/generative-ai`) | Gemini 2.0 Flash for low-latency contextual intelligence |
 | **Data Visualization** | [Recharts 3](https://recharts.org/) | Responsive charts for emission trends and distributions |
 | **Form Handling** | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) | High-performance forms with schema validation |
@@ -165,7 +167,7 @@ EcoSphere-ESG-Management-Platform/
 │   │   ├── layout.tsx          # Root app layout wrapper
 │   │   └── page.tsx            # Main Executive Dashboard
 │   ├── components/
-│   │   ├── shared/             # Reusable widgets (KPICards, SectionHeaders)
+│   │   ├── shared/             # Reusable widgets (KPICards, SectionHeaders, StatusBadges)
 │   │   └── ui/                 # Accessible primitives (Buttons, Dialogs, Tables)
 │   ├── layouts/
 │   │   ├── MainLayout.tsx      # Sidebar + Topbar layout scaffold
@@ -222,7 +224,7 @@ erDiagram
 ### Core Models Summary:
 - **`User` / `Employee`**: System authentication, RBAC roles (`ADMIN`, `MANAGER`, `EMPLOYEE`), and gamification XP totals.
 - **`Department`**: Organizational units with assigned leadership and aggregated emission tallies.
-- **`EmissionFactor`**: Conversion constants ($t\text{CO}_2\text{e}$ per unit) from official sources (EPA, IPCC).
+- **`EmissionFactor`**: Conversion constants ($t\text{CO}_2\text{e}$ per unit) from official sources (EPA, IPCC, CEA).
 - **`CarbonTransaction`**: Raw emission logs with date, source, activity units, and computed $\text{CO}_2\text{e}$.
 - **`CsrActivity` / `Participation`**: Social drives, verification proof URLs, manager approval states, and earned points.
 - **`Badge` / `Reward`**: Gamified achievement thresholds and stock-managed corporate reward catalog.
@@ -254,7 +256,7 @@ Create a `.env.local` file in the root directory:
 # Database connection (SQLite for development, PostgreSQL for production)
 DATABASE_URL="file:./dev.db"
 
-# Google Gemini API Key for AI Copilot (Optional, fallback enabled)
+# Google Gemini API Key for AI Copilot (Optional, intelligent fallback enabled)
 GEMINI_API_KEY="your-gemini-api-key-here"
 
 # NextAuth configuration
@@ -280,6 +282,23 @@ npm run dev
 ```
 
 Visit **[http://localhost:3000](http://localhost:3000)** in your browser.
+
+---
+
+## 🎬 Live Demo Walkthrough
+
+Try these core interactive flows during evaluation:
+
+1. **Live State Cascades:**
+   - Navigate to `/environmental` and log a new carbon transaction or click quick add.
+   - Return to the **Dashboard** (`/`) and observe the live recalculation of the composite ESG score, department rankings, and KPI cards.
+2. **Gamification & Rewards Lifecycle:**
+   - Go to `/social` and view the employee leaderboard.
+   - Review pending CSR participations, click **Approve** to award XP, unlock milestones, and redeem corporate rewards.
+3. **Governance & Compliance Actions:**
+   - Visit `/governance` to review compliance issues, assign team members, and check policy acknowledgement status.
+4. **Context-Aware AI Copilot:**
+   - Head to `/ai` and trigger preset queries like *"Executive ESG Summary"* or *"Department Risk Assessment"*.
 
 ---
 

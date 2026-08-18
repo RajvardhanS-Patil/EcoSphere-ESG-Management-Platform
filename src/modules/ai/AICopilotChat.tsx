@@ -61,7 +61,8 @@ export function AICopilotChat({ data, esgContext }: AICopilotChatProps) {
     const geminiResponse = await callGemini(text);
 
     if (geminiResponse.text) {
-      setMessages(prev => [...prev, { sender: "ai", text: geminiResponse.text }]);
+      const responseText = geminiResponse.text;
+      setMessages(prev => [...prev, { sender: "ai", text: responseText }]);
     } else {
       setMessages(prev => [...prev, {
         sender: "ai",
