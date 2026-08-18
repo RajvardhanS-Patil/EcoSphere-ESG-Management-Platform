@@ -1,5 +1,6 @@
 import React from "react";
 import { Filter, Download, MoreHorizontal, ChevronDown, ChevronLeft, ChevronRight, Factory, Truck, Building2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeptEmission {
   name: string;
@@ -19,6 +20,31 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 export function DepartmentEmissions({ emissions }: { emissions: DeptEmission[] }) {
+  const handleExportCSV = () => {
+    const headers = ["Department", "Scope 1 Emissions", "Scope 2 Emissions", "Compliance Status", "Target Variance"];
+    const rows = emissions.map(e => [
+      `"${e.name}"`,
+      `"${e.scope1}"`,
+      `"${e.scope2}"`,
+      `"${e.status}"`,
+      `"${e.targetVar}"`
+    ]);
+
+    const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `ecosphere_department_emissions_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success("Department Emissions Exported", {
+      description: "CSV report downloaded successfully."
+    });
+  };
+
   return (
     <section className="bg-surface-container-lowest/50 backdrop-blur-md rounded-2xl overflow-hidden border border-outline-variant shadow-sm">
       <div className="p-xl flex flex-col md:flex-row justify-between md:items-center gap-md border-b border-outline-variant">
@@ -27,10 +53,7 @@ export function DepartmentEmissions({ emissions }: { emissions: DeptEmission[] }
           <p className="font-body-sm text-on-surface-variant">Granular tracking across operational units</p>
         </div>
         <div className="flex gap-md">
-          <button className="px-md py-sm border border-outline-variant rounded-lg font-label-md flex items-center gap-sm hover:bg-surface-container-low transition-all">
-            <Filter className="w-4 h-4" /> Filter
-          </button>
-          <button className="px-md py-sm border border-outline-variant rounded-lg font-label-md flex items-center gap-sm hover:bg-surface-container-low transition-all">
+          <button onClick={handleExportCSV} className="px-md py-sm border border-outline-variant rounded-lg font-label-md flex items-center gap-sm hover:bg-surface-container-low transition-all">
             <Download className="w-4 h-4" /> Export CSV
           </button>
         </div>

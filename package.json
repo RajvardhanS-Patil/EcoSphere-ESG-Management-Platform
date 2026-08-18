@@ -1,6 +1,7 @@
 {
-  "name": "tmp_app",
-  "version": "0.1.0",
+  "name": "ecosphere-esg-management-platform",
+  "version": "1.0.0",
+  "description": "Enterprise ESG Management Platform with AI-powered sustainability workflows, carbon accounting, social gamification, and governance compliance.",
   "private": true,
   "scripts": {
     "dev": "next dev",

@@ -1,11 +1,22 @@
 import React, { useState } from "react";
 import { Filter, Download, FileText } from "lucide-react";
 import { useMasterDataStore } from "@/stores/masterDataStore";
+import { useEnvironmentalStore } from "@/stores/environmentalStore";
+import { useSocialGamificationStore } from "@/stores/socialGamificationStore";
+import { useGovernanceStore } from "@/stores/governanceStore";
+import { useScoreStore } from "@/stores/scoreStore";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { toast } from "sonner";
 
 export function CustomReportBuilder() {
   const departments = useMasterDataStore(state => state.departments);
   const categories = useMasterDataStore(state => state.categories);
+  const emissionFactors = useMasterDataStore(state => state.emissionFactors);
+  const carbonTransactions = useEnvironmentalStore(state => state.carbonTransactions);
+  const participations = useSocialGamificationStore(state => state.participations);
+  const csrActivities = useSocialGamificationStore(state => state.csrActivities);
+  const complianceIssues = useGovernanceStore(state => state.complianceIssues);
+  const getOverallScore = useScoreStore(state => state.getOverallScore);
   const addNotification = useNotificationStore(state => state.addNotification);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -26,13 +37,99 @@ export function CustomReportBuilder() {
     });
 
     setTimeout(() => {
+      // Build dynamic report content
+      const filteredTxs = filters.department === 'all' 
+        ? carbonTransactions 
+        : carbonTransactions.filter(tx => tx.departmentId === filters.department);
+
+      const overallScore = getOverallScore();
+      const dateStr = new Date().toISOString().split('T')[0];
+
+      let fileData = "";
+      let fileName = `ecosphere_esg_report_${dateStr}.${format.toLowerCase() === 'excel' ? 'csv' : format.toLowerCase()}`;
+      let mimeType = "text/csv;charset=utf-8;";
+
+      if (format === 'PDF') {
+        // Formatted Markdown/Text Report
+        fileName = `ecosphere_esg_executive_summary_${dateStr}.txt`;
+        mimeType = "text/plain;charset=utf-8;";
+        fileData = `=====================================================
+ECOSPHERE ENTERPRISE ESG REPORT (SEBI BRSR / GRI)
+Generated Date: ${new Date().toLocaleString()}
+Composite ESG Score: ${overallScore}/100
+=====================================================
+
+1. EXECUTIVE SUMMARY
+- Total Carbon Transactions Logged: ${filteredTxs.length}
+- Total Carbon Emissions: ${filteredTxs.reduce((sum, t) => sum + t.calculatedCO2e, 0).toFixed(1)} kg CO2e
+- Pending CSR Participations: ${participations.filter(p => p.status === 'Pending').length}
+- Open Governance Issues: ${complianceIssues.filter(i => i.status !== 'Resolved').length}
+
+2. ENVIRONMENTAL TRANSACTIONS
+${filteredTxs.map(t => {
+  const dept = departments.find(d => d.id === t.departmentId)?.name || t.departmentId;
+  const factor = emissionFactors.find(f => f.id === t.emissionFactorId)?.name || t.emissionFactorId;
+  return `[${t.date}] ${dept} | Source: ${t.source} | Factor: ${factor} | Qty: ${t.quantity} | Impact: ${t.calculatedCO2e.toFixed(1)} kg CO2e`;
+}).join('\n')}
+
+3. SOCIAL & CSR INITIATIVES
+${csrActivities.map(a => `- ${a.title}: ${a.xpReward} XP Reward (${a.status})`).join('\n')}
+
+4. GOVERNANCE & COMPLIANCE ISSUES
+${complianceIssues.map(i => `- [${i.severity}] ${i.description} | Status: ${i.status} | Due: ${i.dueDate}`).join('\n')}
+
+Report certified under EcoSphere Sustainability Platform.
+`;
+      } else {
+        // Standard CSV format
+        const headers = ["Module", "Date", "Department", "Source / Title", "Quantity / Metric", "Impact / Severity", "Status"];
+        const rows: string[][] = [];
+
+        // Add Environmental
+        filteredTxs.forEach(t => {
+          const dept = departments.find(d => d.id === t.departmentId)?.name || t.departmentId;
+          const factor = emissionFactors.find(f => f.id === t.emissionFactorId)?.name || t.emissionFactorId;
+          rows.push(["Environmental", t.date, dept, `${t.source} (${factor})`, `${t.quantity}`, `${t.calculatedCO2e.toFixed(1)} kg CO2e`, "Verified"]);
+        });
+
+        // Add Social
+        participations.forEach(p => {
+          const act = csrActivities.find(a => a.id === p.activityId);
+          const emp = useSocialGamificationStore.getState().employees.find(e => e.id === p.employeeId)?.name || p.employeeId;
+          rows.push(["Social", p.completionDate || "Pending", emp, act?.title || "CSR Activity", "1 participation", `${act?.xpReward || 0} XP`, p.status]);
+        });
+
+        // Add Governance
+        complianceIssues.forEach(i => {
+          const dept = departments.find(d => d.id === i.ownerId)?.name || i.ownerId;
+          rows.push(["Governance", i.dueDate, dept, i.description, "Audit Finding", i.severity, i.status]);
+        });
+
+        const csvLines = [headers.map(h => `"${h}"`).join(",")];
+        rows.forEach(r => csvLines.push(r.map(c => `"${c.replace(/"/g, '""')}"`).join(",")));
+        fileData = csvLines.join("\n");
+      }
+
+      // Trigger browser download
+      const blob = new Blob([fileData], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
       setIsGenerating(false);
       addNotification({
         title: 'Report Ready',
         message: `Your ${format} report has been successfully generated and downloaded.`,
         type: 'success'
       });
-    }, 2500); // 2.5 second simulated delay
+      toast.success(`${format} Report Generated`, {
+        description: `Downloaded ${fileName} successfully.`
+      });
+    }, 1200);
   };
 
   return (
