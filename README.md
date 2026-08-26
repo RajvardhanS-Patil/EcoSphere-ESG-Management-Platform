@@ -2,18 +2,18 @@
 
 <div align="center">
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.2.10-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.4-blue?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Prisma ORM](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
-[![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_2.0_Flash-8E75B2?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2.10-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Prisma ORM](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_2.0_Flash-8E75B2?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Zustand](https://img.shields.io/badge/State-Zustand_5-443e38?style=for-the-badge)](https://github.com/pmndrs/zustand)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](LICENSE)
 
 **An intelligent, enterprise-grade sustainability ERP unifying Environmental accounting, Social gamification, and Governance compliance with AI-powered analytics.**
 
-[Key Features](#-key-features) • [Architecture](#-architecture--system-design) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start--installation) • [Database Schema](#-database-schema) • [API Reference](#-api-reference) • [Live Demo Script](#-live-demo-walkthrough) • [Roadmap](#-future-roadmap)
+[Key Features](#-key-features) • [Architecture](#-architecture--system-design) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start--installation) • [Database Schema](#-database-schema) • [API Reference](#-api-reference) • [Live Demo Walkthrough](#-live-demo-walkthrough) • [Roadmap](#-future-roadmap)
 
 </div>
 
@@ -21,12 +21,12 @@
 
 ## 📌 Executive Overview
 
-Enterprises globally face growing regulatory demands—from **SEBI BRSR (Business Responsibility and Sustainability Reporting)** in India to **EU CSRD** and **GRI Standards**. Yet, most organizations manage sustainability across fragmented spreadsheets, disconnected emails, and manual periodic audits.
+Enterprises globally face growing regulatory demands—from **SEBI BRSR (Business Responsibility and Sustainability Reporting)** in India to **EU CSRD (Corporate Sustainability Due Diligence Directive)** and **GRI Standards**. Yet, most organizations manage sustainability across fragmented spreadsheets, disconnected emails, and manual periodic audits.
 
 **EcoSphere** solves this $500B compliance challenge by delivering **"An ERP for Sustainability"**:
 
 - 📉 **Eliminates Data Silos:** Consolidates Scope 1, 2, and 3 carbon emissions, CSR initiatives, and governance audit trails into a single unified source of truth.
-- ⚡ **Cascading Real-Time State:** Automatically updates global composite ESG scores and department rankings the moment a new carbon transaction or CSR proof is submitted.
+- ⚡ **Cascading Real-Time State:** Automatically recalculates global composite ESG scores and department rankings the moment a new carbon transaction or CSR proof is submitted.
 - 🎮 **Gamification Engine:** Boosts employee CSR engagement from an industry baseline of 20% to over 80% with XP, automatic badge milestones, and a company reward redemption store.
 - 🤖 **Context-Aware AI Copilot:** Powered by Google Gemini 2.0 Flash, transforming live transactional metrics into C-suite executive briefs, risk analyses, and regulatory disclosures in seconds.
 
@@ -193,9 +193,10 @@ EcoSphere-ESG-Management-Platform/
 │       ├── scoreStore.ts
 │       ├── settingsStore.ts
 │       └── socialGamificationStore.ts
-├── .env.local                  # Environment variables configuration
+├── LICENSE                     # MIT License
 ├── package.json                # Project dependencies and run scripts
-└── tsconfig.json               # TypeScript configuration
+├── tsconfig.json               # TypeScript configuration
+└── DEMO_SCRIPT.md              # 5-7 minute live presentation guide
 ```
 
 ---
@@ -282,6 +283,17 @@ npm run dev
 ```
 
 Visit **[http://localhost:3000](http://localhost:3000)** in your browser.
+
+---
+
+## 💻 Available Scripts
+
+| Command | Action |
+|---|---|
+| `npm run dev` | Starts the Next.js development server with hot reloading |
+| `npm run build` | Builds the production bundle |
+| `npm run start` | Runs the built application in production mode |
+| `npm run lint` | Runs ESLint to verify code quality and style standards |
 
 ---
 
